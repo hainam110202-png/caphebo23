@@ -44,14 +44,15 @@ const client = new Client({
 // ===============================================================
 // ⚙️ CẤU HÌNH HỆ THỐNG & ID MỚI - CÀ PHÊ BÒ
 // ===============================================================
-const TOKEN = process.env.TOKEN || 'YOUR_BOT_TOKEN_HERE'; // Dán Token Bot vào đây
-const CLIENT_ID = 'YOUR_BOT_CLIENT_ID';                     // Dán ID Bot vào đây
+const TOKEN = process.env.TOKEN || 'YOUR_BOT_TOKEN_HERE'; 
+const CLIENT_ID = 'YOUR_BOT_CLIENT_ID';                      
 const PREFIX = '!'; 
 
 const ADMIN_ID = '1273924198674464838';                   // ID Admin chính
-const ROLE_LE_TAN_ID = '1432767437438320660';             // 📌 ID Role Lễ Tân MỚI
-const TICKET_CHANNEL_ID = '1533706007044423691';          // 📌 ID Kênh Mở Ticket MỚI
-const FEEDBACK_CHANNEL_ID = '1563094433820446730';        // 📌 ID Kênh Feedback MỚI
+const OWNER_ID = '1536664329599062026';                   // 👑 ID Trùm Server / Khách Hàng (Bạch)
+const ROLE_LE_TAN_ID = '1432767437438320660';              // 📌 ID Role Lễ Tân MỚI
+const TICKET_CHANNEL_ID = '1533706007044423691';           // 📌 ID Kênh Mở Ticket MỚI
+const FEEDBACK_CHANNEL_ID = '1563094433820446730';         // 📌 ID Kênh Feedback MỚI
 
 // 📌 4 Role Ping khi tạo Ticket MỚI
 const TICKET_ROLES = [
@@ -107,6 +108,7 @@ const commands = [
 client.once('ready', async () => {
     console.log(`=================================`);
     console.log(`🤖 Bot [${client.user.tag}] đã sẵn sàng 100%!`);
+    console.log(`🛡️ Hệ thống Anti-Nuker Advanced & KhachHangCuaRimKhanh đã tích hợp!`);
     console.log(`=================================`);
 
     try {
@@ -188,7 +190,7 @@ client.on('interactionCreate', async (interaction) => {
                     .addFields(
                         { name: '📦 Dịch Vụ Chọn Mua:', value: '`🎨 Mua Role Custom / 🏷️ Mua Thẻ Đổi Tên / ☕ Dịch Vụ Khác...`', inline: false },
                         { name: '💳 Phương Thức TT:', value: '`MB Bank / Cowoncy / Ví Điện Tử / Thẻ Cào...`', inline: false },
-                        { name: '🏦 Thông Tin CK:', value: '• **MB Bank:** `1608200899` (Chủ TK: D.D.Khanh)\n• Nội dung: `MuaHang - ${interaction.user.username}`', inline: false }
+                        { name: '🏦 Thông Tin CK:', value: '• **MB Bank:** `1608200899` (Chủ TK: D.D.Khanh)\n• Nội dung: `MuaHang - ' + interaction.user.username + '`', inline: false }
                     );
 
                 const controlRow = new ActionRowBuilder().addComponents(
@@ -271,7 +273,6 @@ client.on('interactionCreate', async (interaction) => {
 
     // ---- D. MODAL SUBMIT ----
     if (interaction.isModalSubmit()) {
-        // ĐÓNG TICKET TỰ ĐỘNG XÓA KÊNH
         if (interaction.customId === 'close_reason_modal') {
             await interaction.deferReply();
             const reason = interaction.fields.getTextInputValue('close_reason_input');
@@ -296,7 +297,6 @@ client.on('interactionCreate', async (interaction) => {
             }, 5000);
         }
 
-        // ĐÁNH GIÁ (FEEDBACK)
         if (interaction.customId === 'submit_feedback_modal') {
             await interaction.deferReply({ ephemeral: true });
             const comment = interaction.fields.getTextInputValue('feedback_comment_input');
@@ -342,7 +342,38 @@ client.on('messageCreate', async (message) => {
 
     const textLower = message.content.toLowerCase().trim();
 
-    // 🔴 LỆNH +NUKER / +ANTINUKER
+    // 👑 LỆNH +KHACHHANGCUARIMKHANH (PING OWNER)
+    if (textLower === '+khachhangcuarimkhanh') {
+        const embed = new EmbedBuilder()
+            .setTitle('👑 KHÁCH HÀNG THÂN THIẾT CỦA RIM KHÁNH')
+            .setDescription(`Chào mừng Khách Hàng VIP! Vui lòng liên hệ Trùm Server: <@${OWNER_ID}> để nhận hỗ trợ ưu tiên đặc biệt.`)
+            .setColor('#FFD700')
+            .setTimestamp()
+            .setFooter({ text: 'Cà Phê Bò System • VIP Customer', iconURL: client.user.displayAvatarURL() });
+
+        return message.reply({ content: `Hey <@${OWNER_ID}>! Có khách hàng thân thiết của Rim Khánh vừa gọi nè!`, embeds: [embed] });
+    }
+
+    // 🛡️ LỆNH +ANTINUKER (FAKE NGẦU BẢO VỆ SERVER)
+    if (textLower === '+antinuker' || textLower === '!antinuker') {
+        const embed = new EmbedBuilder()
+            .setTitle('🛡️ HỆ THỐNG BẢO VỆ ANTI-NUKER V2.5 (FAKE)')
+            .setColor('#00FF00')
+            .setDescription('Trạng thái hệ thống an ninh mạng của máy chủ:')
+            .addFields(
+                { name: '🔒 Anti-Channel Delete', value: '🟢 **ACTIVE** (Tự động khôi phục)', inline: true },
+                { name: '🔒 Anti-Role Delete', value: '🟢 **ACTIVE** (Lockdown 0.1s)', inline: true },
+                { name: '🔒 Anti-Mass Ban/Kick', value: '🟢 **ACTIVE** (Threshold: 3/min)', inline: true },
+                { name: '🔒 Anti-Bot Add', value: '🟢 **ACTIVE** (Whitelist Only)', inline: true },
+                { name: '👤 Trùm Quản Trị', value: `<@${OWNER_ID}>`, inline: false }
+            )
+            .setFooter({ text: 'Powered by Caphebo Anti-Nuker Core', iconURL: client.user.displayAvatarURL() })
+            .setTimestamp();
+
+        return message.reply({ embeds: [embed] });
+    }
+
+    // 🔴 LỆNH +NUKER / +ANTINUKER CŨ
     if (textLower === '+nuker' || textLower === '!nuker') {
         const embed = new EmbedBuilder()
             .setColor('#e74c3c')
@@ -350,14 +381,6 @@ client.on('messageCreate', async (message) => {
             .setDescription('Hệ thống Anti-Nuke Cà Phê Bò sẵn sàng chặn các hành vi phá hoại Server.')
             .addFields({ name: '🛡️ Trạng Thái Hiện Tại', value: antiNukeActive ? '🟢 **Đang BẬT**' : '🔴 **Đang TẮT**' });
         return message.reply({ embeds: [embed] });
-    }
-
-    if (textLower === '+antinuker' || textLower === '!antinuker') {
-        if (message.author.id !== ADMIN_ID && !message.member.permissions.has(PermissionFlagsBits.Administrator)) {
-            return message.reply('❌ Chỉ Admin tối cao mới được chỉnh Anti-Nuke!');
-        }
-        antiNukeActive = !antiNukeActive;
-        return message.reply(`🛡️ **[CÀ PHÊ BÒ SECURITY]** Đã ${antiNukeActive ? '🟢 **BẬT**' : '🔴 **TẮT**'} chế độ Anti-Nuke!`);
     }
 
     // 🌟 LỆNH +DONE / !DONE
@@ -465,4 +488,7 @@ client.on('messageCreate', async (message) => {
     }
 });
 
-client.login(MTU2MzA5MTUzNTQ4NTA3NTUyOA.G5Kj4J.FvG80rAZq77nnOyRMpmKeBE-fVpZylaH9mJlS8);
+// ===============================================================
+// 🤖 LOGIN BOT (ĐÃ BỌC DẤU NGOẶC KÉP CHUẨN XÁC)
+// ===============================================================
+client.login("MTU2MzA5MTUzNTQ4NTA3NTUyOA.G5Kj4J.FvG80rAZq77nnOyRMpmKeBE-fVpZyLaH9mJ1S8");
