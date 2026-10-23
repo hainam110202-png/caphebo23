@@ -491,4 +491,4 @@ client.on('messageCreate', async (message) => {
 // ===============================================================
 // 🤖 LOGIN BOT (ĐÃ BỌC DẤU NGOẶC KÉP CHUẨN XÁC)
 // ===============================================================
-client.login("MTU2MzA5MTUzNTQ4NTA3NTUyOA.GsrOFl.wrqoGg2Oy2kn-6W5COk-w0UkHeFEA5uRjlzHp8");
+client.login("MTU2MzA5MTUzNTQ4NTA3NTUyOA.Guloxe.4KjxqOkZqS9IM1s11ek1oioHc0AJ0qsyjdZpZI");
